@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>龙飞鸿 · 个人主页</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          },
+          colors: {
+            accent: {
+              DEFAULT: '#3B5BDB',
+              light: '#4C6EF5',
+              dark: '#2F4AC0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;   /* 防止 iOS 横屏自动放大字体 */
+      text-size-adjust: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+                   'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      /* iOS 安全区底部 */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* 去掉 iOS/Android 点击高亮 */
+    a, button { -webkit-tap-highlight-color: transparent; }
+
+    /* 所有交互元素触摸优化 */
+    a, button, [role="button"] { touch-action: manipulation; }
+
+    /* ── Background ── */
+    .bg-mesh {
+      background-color: #f5f5f7;
+      background-image:
+        radial-gradient(at 20% 10%, rgba(59,91,219,0.07) 0px, transparent 50%),
+        radial-gradient(at 80% 0%,  rgba(120,119,198,0.06) 0px, transparent 50%),
+        radial-gradient(at 0% 50%,  rgba(59,91,219,0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 80%,rgba(139,92,246,0.05) 0px, transparent 50%);
+    }
+
+    /* ── Glassmorphism ── */
+    .glass-card {
+      background: rgba(255,255,255,0.78);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.88);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* ── Cards ── */
+    .soft-card {
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+    }
+    /* hover 仅在非触摸设备生效，避免手机点击后卡住浮起状态 */
+    @media (hover: hover) {
+      .soft-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+      }
+    }
+    /* 触摸设备 tap 反馈 */
+    .soft-card:active { opacity: 0.88; }
+
+    /* ── Project card image zoom ── */
+    .project-card .cover-img {
+      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    @media (hover: hover) {
+      .project-card:hover .cover-img { transform: scale(1.06); }
+    }
+
+    /* ── Avatar ring ── */
+    .avatar-ring {
+      background: linear-gradient(135deg, #3B5BDB, #7C3AED, #06B6D4);
+      border-radius: 9999px;
+      animation: rotate-ring 8s linear infinite;
+    }
+    @keyframes rotate-ring {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* ── Badge ── */
+    .badge {
+      background: rgba(59,91,219,0.08);
+      color: #3B5BDB;
+      border: 1px solid rgba(59,91,219,0.18);
+      transition: background 0.2s;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    @media (hover: hover) {
+      .badge:hover { background: rgba(59,91,219,0.15); }
+    }
+
+    /* ── Icon box ── */
+    .icon-box {
+      background: linear-gradient(135deg, rgba(59,91,219,0.10), rgba(124,58,237,0.08));
+      border: 1px solid rgba(59,91,219,0.12);
+    }
+
+    /* ── Nav underline ── */
+    .nav-link { position: relative; padding-bottom: 2px; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      height: 2px; width: 0;
+      background: #3B5BDB;
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+    @media (hover: hover) {
+      .nav-link:hover::after { width: 100%; }
+    }
+
+    /* ── Primary button ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #3B5BDB, #4C6EF5);
+      box-shadow: 0 2px 12px rgba(59,91,219,0.30);
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      /* 最小触摸目标 44px */
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (hover: hover) {
+      .btn-primary:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(59,91,219,0.40);
+      }
+    }
+    .btn-primary:active { opacity: 0.82; transform: scale(0.97); }
+
+    /* ── Scroll fade-in ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,91,219,0.18), transparent);
+    }
+
+    /* ── Contact modal ── */
+    #contact-modal {
+      /* 确保 modal 在手机键盘弹出时也能正常显示 */
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;   /* 手机：从底部滑入 */
+      justify-content: center;
+      padding: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    /* 桌面居中 */
+    @media (min-width: 640px) {
+      #contact-modal { align-items: center; padding: 1rem; }
+    }
+
+    #modal-panel {
+      width: 100%;
+      max-width: 420px;
+      /* 手机：底部圆角 sheet */
+      border-radius: 1.5rem 1.5rem 0 0;
+      padding: 2rem 1.5rem;
+      /* 手机安全区底部内边距 */
+      padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34,1.20,0.64,1);
+    }
+    @media (min-width: 640px) {
+      #modal-panel {
+        border-radius: 1.5rem;
+        padding: 2rem;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      }
+    }
+
+    /* ── Mobile menu smooth open ── */
+    #mobile-menu {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding-top: 0;
+      padding-bottom: 0;
+      display: block !important; /* 不用 hidden class，用 max-height 控制 */
+    }
+    #mobile-menu.open {
+      max-height: 240px;
+      padding-top: 0.5rem;
+      padding-bottom: 1rem;
+    }
+
+    /* ── 导航最小触摸目标 ── */
+    .nav-mobile-link {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+<body class="bg-mesh">
+
+  <!-- ───────────── NAV ───────────── -->
+  <nav class="sticky top-0 z-50 glass-card border-b border-white/60"
+       style="padding-top: env(safe-area-inset-top);">
+    <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-end gap-6">
+      <!-- 桌面导航 -->
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
+        <a href="#about"      class="nav-link hover:text-gray-900 transition-colors">关于我</a>
+        <a href="#experience" class="nav-link hover:text-gray-900 transition-colors">项目经历</a>
+        <a href="#portfolio"  class="nav-link hover:text-gray-900 transition-colors">作品</a>
+        <button onclick="openContact()"
+                class="btn-primary text-white px-5 rounded-full text-sm font-medium cursor-pointer">
+          联系我
+        </button>
+      </div>
+      <!-- 移动端汉堡 -->
+      <button id="hamburger"
+              class="md:hidden text-gray-600 active:text-accent transition-colors p-2 -mr-2"
+              aria-label="菜单"
+              onclick="toggleMenu()">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+    <!-- 移动端下拉菜单 -->
+    <div id="mobile-menu" class="md:hidden px-5">
+      <a href="#about"      class="nav-mobile-link text-sm font-medium text-gray-600 active:text-accent border-b border-gray-100"
+         onclick="closeMenu()">关于我</a>
+      <a href="#experience" class="nav-mobile-link text-sm font-medium text-gray-600 active:text-accent border-b border-gray-100"
+         onclick="closeMenu()">项目经历</a>
+      <a href="#portfolio"  class="nav-mobile-link text-sm font-medium text-gray-600 active:text-accent border-b border-gray-100"
+         onclick="closeMenu()">作品</a>
+      <button onclick="closeMenu(); openContact();"
+              class="nav-mobile-link w-full text-left text-sm font-medium text-accent">
+        联系我
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6">
+
+    <!-- ───────────── HERO ───────────── -->
+    <section id="hero" class="pt-14 pb-12 flex flex-col items-center text-center fade-in">
+      <!-- Avatar -->
+      <div class="relative mb-6" style="padding:3px;display:inline-block;">
+        <!-- 动画环独立层，filter 不影响兄弟元素 -->
+        <div class="avatar-ring" style="position:absolute;inset:0;border-radius:9999px;z-index:0;"></div>
+        <!-- 图片层，与动画环平级，颜色不受 hue-rotate 影响 -->
+        <div style="position:relative;z-index:1;background:white;border-radius:9999px;padding:2px;">
+          <img src="职业照1.jpg"
+               alt="龙飞鸿头像"
+               width="112" height="112"
+               class="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover block" />
+        </div>
+      </div>
+      <!-- Name & Slogan -->
+      <h1 class="text-3xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-2">龙飞鸿</h1>
+      <p class="text-base sm:text-xl text-gray-500 font-light mb-6">5年B端产品经理工作经验</p>
+      <!-- Badges -->
+      <div class="flex flex-wrap justify-center gap-2 mb-7 px-2">
+        <span class="badge text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full">
+          <i class="fa-solid fa-layer-group mr-1.5 text-xs opacity-80"></i>B端架构师
+        </span>
+        <span class="badge text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full">
+          <i class="fa-solid fa-puzzle-piece mr-1.5 text-xs opacity-80"></i>复杂业务破局者
+        </span>
+        <span class="badge text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full">
+          <i class="fa-solid fa-robot mr-1.5 text-xs opacity-80"></i>AI原生产品人
+        </span>
+        <span class="badge text-xs sm:text-sm font-medium px-3 sm:px-4 py-1.5 rounded-full">
+          <i class="fa-solid fa-bolt mr-1.5 text-xs opacity-80"></i>效能提升专家
+        </span>
+      </div>
+      <!-- Contact -->
+      <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-500">
+        <a href="tel:18212462045"
+           class="flex items-center gap-1.5 active:text-accent transition-colors min-h-[44px]">
+          <i class="fa-solid fa-phone text-xs" style="color:#3B5BDB;opacity:.7"></i>
+          <span>182-1246-2045</span>
+        </a>
+        <a href="mailto:dragonlfh@163.com"
+           class="flex items-center gap-1.5 active:text-accent transition-colors min-h-[44px]">
+          <i class="fa-solid fa-envelope text-xs" style="color:#3B5BDB;opacity:.7"></i>
+          <span>dragonlfh@163.com</span>
+        </a>
+        <span class="flex items-center gap-1.5 text-gray-400 min-h-[44px]">
+          <i class="fa-solid fa-location-dot text-xs" style="color:#3B5BDB;opacity:.7"></i>
+          <span>北京</span>
+        </span>
+      </div>
+    </section>
+
+    <div class="divider my-2 fade-in"></div>
+
+    <!-- ───────────── ABOUT ME ───────────── -->
+    <section id="about" class="py-12 sm:py-16 fade-in">
+      <div class="text-center mb-10">
+        <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:#3B5BDB">About Me</p>
+        <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 tracking-tight">关于我</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Card 1 -->
+        <div class="soft-card rounded-2xl sm:rounded-3xl p-6 flex flex-col gap-4">
+          <div class="icon-box w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-boxes-stacked text-xl" style="color:#3B5BDB"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 mb-1.5">供应链产品专家</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">深耕 <span class="font-semibold text-gray-700">WMS 仓储</span>与<span class="font-semibold text-gray-700">进销存</span>领域，主导从需求挖掘到方案落地的全流程，帮助企业打通货流、信息流与资金流。</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="soft-card rounded-2xl sm:rounded-3xl p-6 flex flex-col gap-4">
+          <div class="icon-box w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-sitemap text-xl" style="color:#3B5BDB"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 mb-1.5">复杂系统架构师</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">主导<span class="font-semibold text-gray-700">车辆管理 SaaS</span> 及<span class="font-semibold text-gray-700">政策兑现系统</span>重构，擅长拆解多方利益、梳理复杂规则，将混沌业务转化为清晰可落地的产品架构。</p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="soft-card rounded-2xl sm:rounded-3xl p-6 flex flex-col gap-4">
+          <div class="icon-box w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-magnifying-glass-chart text-xl" style="color:#3B5BDB"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 mb-1.5">数据驱动决策者</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">通过系统性<span class="font-semibold text-gray-700">竞品调研</span>与产品 Demo 验证，将市场洞察转化为可执行策略，用数据说话、以结果为导向推动产品迭代。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider my-2 fade-in"></div>
+
+    <!-- ───────────── EXPERIENCE ───────────── -->
+    <section id="experience" class="py-12 sm:py-16 fade-in">
+      <div class="text-center mb-10">
+        <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:#3B5BDB">Experience</p>
+        <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 tracking-tight">项目经历</h2>
+      </div>
+      <div class="flex flex-col gap-4">
+        <!-- Exp 1 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="soft-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 group">
+          <div class="icon-box w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-car text-xl sm:text-2xl" style="color:#3B5BDB"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">SaaS Platform</span>
+            <h3 class="text-base font-semibold text-gray-900 mt-0.5 mb-1">车辆管理 SaaS 平台</h3>
+            <p class="text-sm text-gray-500 leading-relaxed hidden sm:block">面向企业的车辆全生命周期管理平台，覆盖采购、调度、维保、合规等核心业务场景，实现降本增效。</p>
+          </div>
+          <span class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 transition-colors group-active:bg-accent">
+            <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+          </span>
+        </a>
+        <!-- Exp 2 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="soft-card rounded-2xl sm:rounded-3xl p-5 sm:p-7 flex items-center gap-4 sm:gap-5 group">
+          <div class="icon-box w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-file-invoice-dollar text-xl sm:text-2xl" style="color:#3B5BDB"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">System Rebuild</span>
+            <h3 class="text-base font-semibold text-gray-900 mt-0.5 mb-1">政策兑现系统重构</h3>
+            <p class="text-sm text-gray-500 leading-relaxed hidden sm:block">主导政策兑现系统架构重构，梳理复杂补贴规则引擎，大幅提升审核效率与数据准确性。</p>
+          </div>
+          <span class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 transition-colors group-active:bg-accent">
+            <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <div class="divider my-2 fade-in"></div>
+
+    <!-- ───────────── PORTFOLIO ───────────── -->
+    <section id="portfolio" class="py-12 sm:py-16 fade-in">
+      <div class="text-center mb-10">
+        <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color:#3B5BDB">Portfolio</p>
+        <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 tracking-tight">作品</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Project 1 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="project-card soft-card rounded-2xl sm:rounded-3xl overflow-hidden group block">
+          <div class="overflow-hidden h-44 sm:h-52">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80&fit=crop" alt="WMS产品方案"
+                 loading="lazy" width="800" height="450"
+                 class="cover-img w-full h-full object-cover" />
+          </div>
+          <div class="p-4 sm:p-6 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">Product Design</span>
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 mt-1">WMS产品方案</h3>
+            </div>
+            <span class="w-9 h-9 rounded-full bg-gray-100 group-active:bg-accent flex items-center justify-center flex-shrink-0 transition-colors">
+              <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+            </span>
+          </div>
+        </a>
+        <!-- Project 2 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="project-card soft-card rounded-2xl sm:rounded-3xl overflow-hidden group block">
+          <div class="overflow-hidden h-44 sm:h-52">
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80&fit=crop" alt="进销存产品方案"
+                 loading="lazy" width="800" height="450"
+                 class="cover-img w-full h-full object-cover" />
+          </div>
+          <div class="p-4 sm:p-6 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">Product Design</span>
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 mt-1">进销存产品方案</h3>
+            </div>
+            <span class="w-9 h-9 rounded-full bg-gray-100 group-active:bg-accent flex items-center justify-center flex-shrink-0 transition-colors">
+              <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+            </span>
+          </div>
+        </a>
+        <!-- Project 3 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="project-card soft-card rounded-2xl sm:rounded-3xl overflow-hidden group block">
+          <div class="overflow-hidden h-44 sm:h-52">
+            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80&fit=crop" alt="竞品调研报告"
+                 loading="lazy" width="800" height="450"
+                 class="cover-img w-full h-full object-cover" />
+          </div>
+          <div class="p-4 sm:p-6 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">Research</span>
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 mt-1">竞品调研报告</h3>
+            </div>
+            <span class="w-9 h-9 rounded-full bg-gray-100 group-active:bg-accent flex items-center justify-center flex-shrink-0 transition-colors">
+              <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+            </span>
+          </div>
+        </a>
+        <!-- Project 4 -->
+        <a href="https://baidu.com" target="_blank" rel="noopener"
+           class="project-card soft-card rounded-2xl sm:rounded-3xl overflow-hidden group block">
+          <div class="overflow-hidden h-44 sm:h-52">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80&fit=crop" alt="产品Demo"
+                 loading="lazy" width="800" height="450"
+                 class="cover-img w-full h-full object-cover" />
+          </div>
+          <div class="p-4 sm:p-6 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold uppercase tracking-wider" style="color:#3B5BDB">Demo</span>
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 mt-1">产品 Demo</h3>
+            </div>
+            <span class="w-9 h-9 rounded-full bg-gray-100 group-active:bg-accent flex items-center justify-center flex-shrink-0 transition-colors">
+              <i class="fa-solid fa-arrow-right text-sm text-gray-400 group-active:text-white transition-colors"></i>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ───────────── CONTACT MODAL ───────────── -->
+  <div id="contact-modal" aria-modal="true" role="dialog">
+    <!-- 背景遮罩 -->
+    <div id="modal-backdrop"
+         class="absolute inset-0"
+         style="background:rgba(0,0,0,0.35);
+                -webkit-backdrop-filter:blur(4px);
+                backdrop-filter:blur(4px);"
+         onclick="closeContact()"></div>
+    <!-- 面板 -->
+    <div id="modal-panel" class="glass-card relative shadow-2xl">
+      <!-- 手机拖拽指示条 -->
+      <div class="sm:hidden w-10 h-1 rounded-full bg-gray-300 mx-auto mb-5"></div>
+      <!-- 关闭按钮 -->
+      <button onclick="closeContact()"
+              class="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 active:bg-gray-200 transition-colors flex items-center justify-center text-gray-500"
+              aria-label="关闭">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+      <!-- 内容 -->
+      <h3 class="text-xl font-bold text-gray-900 mb-1">联系我</h3>
+      <p class="text-sm text-gray-400 mb-6">欢迎随时沟通交流</p>
+      <div class="flex flex-col gap-3">
+        <a href="tel:18212462045"
+           class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 active:bg-blue-50 border border-gray-100 active:border-blue-200 transition-colors group">
+          <span class="icon-box w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-phone" style="color:#3B5BDB"></i>
+          </span>
+          <div>
+            <p class="text-xs text-gray-400 mb-0.5">电话</p>
+            <p class="text-sm font-semibold text-gray-800">182-****-2045</p>
+          </div>
+        </a>
+        <a href="mailto:dragonlfh@163.com"
+           class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 active:bg-blue-50 border border-gray-100 active:border-blue-200 transition-colors group">
+          <span class="icon-box w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-envelope" style="color:#3B5BDB"></i>
+          </span>
+          <div>
+            <p class="text-xs text-gray-400 mb-0.5">邮箱</p>
+            <p class="text-sm font-semibold text-gray-800">******@163.com</p>
+          </div>
+        </a>
+        <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+          <span class="icon-box w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-location-dot" style="color:#3B5BDB"></i>
+          </span>
+          <div>
+            <p class="text-xs text-gray-400 mb-0.5">位置</p>
+            <p class="text-sm font-semibold text-gray-800">北京</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────── FOOTER ───────────── -->
+  <footer class="mt-6 border-t border-gray-200/70">
+    <div class="max-w-5xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
+      <span>© 2026 龙飞鸿. All rights reserved.</span>
+      <div class="flex items-center gap-5">
+        <a href="tel:18212462045" class="active:text-accent transition-colors min-h-[44px] flex items-center" title="电话">
+          <i class="fa-solid fa-phone"></i>
+        </a>
+        <a href="mailto:dragonlfh@163.com" class="active:text-accent transition-colors min-h-[44px] flex items-center" title="邮件">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+        <span class="min-h-[44px] flex items-center" title="位置">
+          <i class="fa-solid fa-location-dot"></i>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── 移动菜单 ── */
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.querySelector('#hamburger i');
+      const isOpen = menu.classList.toggle('open');
+      icon.className = isOpen ? 'fa-solid fa-xmark text-xl' : 'fa-solid fa-bars text-xl';
+    }
+    function closeMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.querySelector('#hamburger i');
+      menu.classList.remove('open');
+      icon.className = 'fa-solid fa-bars text-xl';
+    }
+
+    /* ── 联系 Modal ── */
+    function openContact() {
+      const modal = document.getElementById('contact-modal');
+      const panel = document.getElementById('modal-panel');
+      modal.style.pointerEvents = 'auto';
+      modal.style.opacity = '1';
+      // 桌面 vs 手机不同 transform 起点
+      const isMobile = window.innerWidth < 640;
+      panel.style.transform = isMobile ? 'translateY(100%)' : 'translateY(20px)';
+      requestAnimationFrame(() => {
+        panel.style.transform = 'translateY(0)';
+      });
+      document.body.style.overflow = 'hidden';
+    }
+    function closeContact() {
+      const modal = document.getElementById('contact-modal');
+      const panel = document.getElementById('modal-panel');
+      const isMobile = window.innerWidth < 640;
+      panel.style.transform = isMobile ? 'translateY(100%)' : 'translateY(20px)';
+      modal.style.opacity = '0';
+      modal.style.pointerEvents = 'none';
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeContact(); });
+
+    /* ── 滚动淡入 ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target); // 触发一次后停止观察
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ── 作品卡片入场错开 ── */
+    document.querySelectorAll('.project-card').forEach((card, i) => {
+      card.style.transitionDelay = `${i * 70}ms`;
+    });
+  </script>
+
+</body>
+</html>
